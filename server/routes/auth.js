@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const bycrypt = require("bcryptjs");
+const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const multer = require("multer");
 
@@ -17,11 +17,11 @@ const storage = multer.diskStorage({
   },
 });
 
-const uploads = multer({ storage });
+const upload = multer({ storage });
 
 // user Register
 
-router.post("/register", uploads.single("profileImage"), async (req, res) => {
+router.post("/register", upload.single("profileImage"), async (req, res) => {
   try {
     // take all information from form
     const { firstName, lastName, email, password } = req.body;
@@ -43,8 +43,8 @@ router.post("/register", uploads.single("profileImage"), async (req, res) => {
     }
 
     // hash the password
-    const salt = await bycrypt.genSalt();
-    const hashedPassword = await bycrypt.hash(password, salt);
+    const salt = await bcrypt.genSalt();
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     // create a new user
     const newUser = new User({
@@ -59,7 +59,7 @@ router.post("/register", uploads.single("profileImage"), async (req, res) => {
     await newUser.save();
 
     // send succesful message
-    res.status(200).json({ message: "user registered succesful" });
+    res.status(200).json({ message: "user registered succesful",user:newUser });
   } catch (err) {
     console.log(err);
     res
@@ -82,7 +82,7 @@ router.post("/login", async (req, res) => {
 
     // compare password with hashed pasword
 
-    const isMatch = await bycrypt.compare(password,user.password)
+    const isMatch = await bcrypt.compare(password,user.password)
     if(!isMatch){
       return res.status(400).json({message:"invalid credentials"})
     }

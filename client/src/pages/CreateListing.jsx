@@ -100,7 +100,7 @@ const CreateListing = () => {
 
     try {
       // create a new form data object to handle file uploads
-      const listingForm = new FormData();
+       const listingForm = new FormData();
       listingForm.append("creator", creatorId);
       listingForm.append("category", category);
       listingForm.append("type", type);

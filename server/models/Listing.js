@@ -54,7 +54,7 @@ const ListingSchema = new Schema({
     type: Array,
     default: [],
   },
-  listingPhotoPath: [{ type: String }] /*store the photo url*/,
+  listingPhotoPaths: [{ type: String }] /*store the photo url*/,
   title: {
     type: String,
     required: true,

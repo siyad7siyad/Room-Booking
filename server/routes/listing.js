@@ -89,7 +89,7 @@ router.get("/", async (req, res) => {
     if (qCategory) {
       listings = await Listing.find({ category: qCategory }).populate("creator");
     } else {
-      listings = await Listing.find().populate("creator")
+      listings = await Listing.find();
     }
 
     res.status(200).json(listings);
@@ -98,5 +98,21 @@ router.get("/", async (req, res) => {
     console.error(err);
   }
 });
+
+
+
+// listing details
+
+router.get("/:listingId",async(req,res)=>{
+  try{
+    const {listingId} = req.params
+    const listing = await Listing.findById(listingId)
+    res.status(202).json(listing)
+
+  }catch(err){
+    res.status(404).json({message:"listing is not found",error:err.message})
+  }
+})
+
 
 module.exports = router;

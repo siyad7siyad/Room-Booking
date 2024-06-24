@@ -16,26 +16,26 @@ const LoginPage = () => {
 
     try {
       const response = await fetch("http://localhost:3001/auth/login", {
-        method:"POST",
+        method: "POST",
         headers: {
-          "Content-Type": "application/type",
+          "Content-Type": "application/json", // Corrected Content-Type
         },
         body: JSON.stringify({ email, password }),
       });
 
-      // get data after fetching
       const loggedIn = await response.json();
 
-      if (loggedIn) {
+      if (response.ok && loggedIn) { // Check if response is OK
         dispatch(
           setLogin({
             user: loggedIn.user,
             token: loggedIn.token,
           })
         );
+        navigate("/");
+      } else {
+        console.log("login failed", loggedIn.message); // Log error message from backend
       }
-
-      navigate("/");
     } catch (err) {
       console.log("login failed", err.message);
     }

@@ -58,6 +58,12 @@ const NavBar = () => {
           <div className="navbar_right_accountmenu">
             <Link to="/login">Log In</Link>
             <Link to="/register">sign Up</Link>
+            
+          </div>
+        )}
+
+        {dropdownMenu && user && (
+          <div className="navbar_right_accountmenu">
             <Link to="">Trip List</Link>
             <Link to="">Wish List</Link>
             <Link to="">Property List</Link>
@@ -72,10 +78,6 @@ const NavBar = () => {
               Log Out
             </Link>
           </div>
-        )}
-
-        {dropdownMenu && user && (
-          <div className="navbar_right_accountmenu"></div>
         )}
       </div>
     </div>

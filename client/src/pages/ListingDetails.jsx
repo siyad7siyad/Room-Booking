@@ -1,13 +1,179 @@
-import React, { useEffect } from "react";
+// import React, { useEffect } from "react";
+// import { useState } from "react";
+// import { useParams } from "react-router-dom";
+// import { facilities } from "../data";
+// import NavBar from "../Components/NavBar";
+// import "react-date-range/dist/styles.css";
+// import "react-date-range/dist/theme/default.css";
+// import { DateRange } from "react-date-range";
+// import Loader from "../Components/Loader";
+// import "../styles/ListingDetails.scss"
+
+// const ListingDetails = () => {
+//   const [loading, setLoading] = useState(true);
+
+//   const { listingId } = useParams();
+//   const [listing, setListing] = useState(null);
+
+//   const getListingDetails = async () => {
+//     try {
+//       const response = await fetch(
+//         `http://localhost:3001/properties/${listingId}`,
+//         {
+//           method: "GET",
+//         }
+//       );
+
+//       const data = await response.json();
+//       setListing(data);
+//       setLoading(false);
+//     } catch (err) {
+//       console.log("fetch listing details failed", err.message);
+//     }
+//   };
+
+//   useEffect(() => {
+//     getListingDetails();
+//   }, []);
+
+//   // booking calender
+//   const [dateRange, setDateRange] = useState([
+//     {
+//       startDate: new Date(),
+//       endDate: new Date(),
+//       key: "selection",
+//     },
+//   ]);
+
+//   const handleSelect = (ranges) => {
+//     // update the selected date range when user makes selection
+//     setDateRange([ranges.selection]);
+//   };
+
+//   const start = new Date(dateRange[0].startDate);
+
+//   const end = new Date(dateRange[0].endDate);
+//   // calculate difference days
+//   const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
+
+//   return loading ? (
+//     <Loader />
+//   ) : (
+//     <>
+//       <NavBar />
+//       <div className="listing-details">
+//         <div className="title">
+//           <h1>{listing.title}</h1>
+//           <div></div>
+//         </div>
+
+//         <div className="photos">
+//           {listing.listingPhotoPaths?.map((item) => (
+//             <img
+//               src={`http://localhost:3001/${item.replace("public", "")}`}
+//               alt="listing photo"
+//             />
+//           ))}
+//         </div>
+
+//         <h2>
+//           {listing.type} in {listing.city} , {listing.province}, ,
+//           {listing.country}
+//         </h2>
+
+//         <p>
+//           {listing.guestCount}guests -{listing.bedroomCount}bedroom(s) -{" "}
+//           {listing.bedCount}bed(s) - {listing.bathroomCount}Bathroom(s)
+//         </p>
+//         <hr />
+
+//         <div className="profile">
+//           <img
+//             src={`http://localhost:3001/${listing.creator.profileImagePath.replace(
+//               "public",
+//               ""
+//             )}`}
+//             alt=""
+//           />
+
+//           <h3>
+//             HOSTED BY {listing.creator.firstName}
+//             {listing.creator.lastName}
+//           </h3>
+
+//           <hr />
+
+//           <h3>Description</h3>
+//           <p>{listing.descripton}</p>
+
+//           <h3>{listing.highlight}</h3>
+//           <p>{listing.highlightDesc}</p>
+
+//           <hr />
+
+//           <div className="booking">
+//             <div>
+//               <h2>What this place offer?</h2>
+//               <div className="amenities">
+//                 {listing.amenities[0].split(", ").map((item, index) => (
+//                   <div className="facility" key={index}>
+//                     <div className="facility_icon">
+//                       {
+//                         facilities.find((facility) => facility.name === item)
+//                           ?.icon
+//                       }
+//                     </div>
+//                     <p>{item}</p>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+
+//           <div>
+//             How Long Do you want to stay?
+//             <div className="date-range-calendar">
+//               <DateRange ranges={dateRange} onChange={handleSelect} />
+
+//               {dayCount > 1 ? (
+//                 <h2>
+//                   ${listing.price} x {dayCount} nights
+//                 </h2>
+//               ) : (
+//                 <h2>
+//                   ${listing.price} x {dayCount} night
+//                 </h2>
+//               )}
+
+//               <h2>Total price :$ {listing.price * dayCount}</h2>
+//               <p>Start Date:{dateRange[0].startDate.toDateString()}</p>
+//               <p>End Date:{dateRange[0].endDate.toDateString()}</p>
+
+//               <button className="button" type="submit">
+//                 BOOKING
+//               </button>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </>
+//   );
+// };
+
+// export default ListingDetails;
+
+import { useEffect, useState } from "react";
 import "../styles/ListingDetails.scss";
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { facilities } from "../data";
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
 import { DateRange } from "react-date-range";
 import Loader from "../Components/Loader";
+import NavBar from "../Components/NavBar";
+import { useSelector } from "react-redux";
+
 
 const ListingDetails = () => {
   const [loading, setLoading] = useState(true);
@@ -26,9 +192,9 @@ const ListingDetails = () => {
 
       const data = await response.json();
       setListing(data);
-      setLoading(false)
+      setLoading(false);
     } catch (err) {
-      console.log("fetch listing details failed", err.message);
+      console.log("Fetch Listing Details Failed", err.message);
     }
   };
 
@@ -36,7 +202,10 @@ const ListingDetails = () => {
     getListingDetails();
   }, []);
 
-  // booking calender
+  console.log(listing)
+
+
+  /* BOOKING CALENDAR */
   const [dateRange, setDateRange] = useState([
     {
       startDate: new Date(),
@@ -46,72 +215,103 @@ const ListingDetails = () => {
   ]);
 
   const handleSelect = (ranges) => {
-    // update the selected date range when user makes selection
+    // Update the selected date range when user makes a selection
     setDateRange([ranges.selection]);
   };
 
   const start = new Date(dateRange[0].startDate);
-
   const end = new Date(dateRange[0].endDate);
-  // calculate difference days
-  const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
+  const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24); // Calculate the difference in day unit
 
-  return loading ? <Loader /> :(
+  /* SUBMIT BOOKING */
+  const customerId = useSelector((state) => state?.user?._id)
+
+  const navigate = useNavigate()
+
+  const handleSubmit = async () => {
+    try {
+      const bookingForm = {
+        customerId,
+        listingId,
+        hostId: listing.creator._id,
+        startDate: dateRange[0].startDate.toDateString(),
+        endDate: dateRange[0].endDate.toDateString(),
+        totalPrice: listing.price * dayCount,
+      }
+
+      const response = await fetch("http://localhost:3001/bookings/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(bookingForm)
+      })
+
+      if (response.ok) {
+        navigate(`/${customerId}/trips`)
+      }
+    } catch (err) {
+      console.log("Submit Booking Failed.", err.message)
+    }
+  }
+
+  return loading ? (
+    <Loader />
+  ) : (
     <>
-    <div className="listing-details">
-      <div className="title">
-        <h1>{listing.title}</h1>
-        <div></div>
-      </div>
+      <NavBar />
+      
+      <div className="listing-details">
+        <div className="title">
+          <h1>{listing.title}</h1>
+          <div></div>
+        </div>
 
-      <div className="photos">
-        {listing.listingPhotoPaths?.map((item) => (
+        <div className="photos">
+          {listing.listingPhotoPaths?.map((item) => (
+            <img
+              src={`http://localhost:3001/${item.replace("public", "")}`}
+              alt="listing photo"
+            />
+          ))}
+        </div>
+
+        <h2>
+          {listing.type} in {listing.city}, {listing.province},{" "}
+          {listing.country}
+        </h2>
+        <p>
+          {listing.guestCount} guests - {listing.bedroomCount} bedroom(s) -{" "}
+          {listing.bedCount} bed(s) - {listing.bathroomCount} bathroom(s)
+        </p>
+        <hr />
+
+        <div className="profile">
           <img
-            src={`http://localhost:3001/${item.replace("public", "")}`}
-            alt="listing photo"
+            src={`http://localhost:3001/${listing.creator.profileImagePath.replace(
+              "public",
+              ""
+            )}`}
           />
-        ))}
-      </div>
-
-      <h2>
-        {listing.type} in {listing.city} , {listing.province} ,{listing.country}
-      </h2>
-
-      <p>
-        {listing.guestCount}guests -{listing.bedroomCount}bedroom(s) -{" "}
-        {listing.bedCount}bed(s) - {listing.bathroomCount}Bathroom(s)
-      </p>
-      <hr />
-
-      <div className="profile">
-        <img
-          src={`http://localhost:3001/${listing.creator.profileImagePath.replace(
-            "public",
-            ""
-          )}`}
-          alt=""
-        />
-
-        <h3>
-          HOSTED BY {listing.creator.firstName}
-          {listing.creator.lastName}
-        </h3>
-
+          <h3>
+            Hosted by {listing.creator.firstName} {listing.creator.lastName}
+          </h3>
+        </div>
         <hr />
 
         <h3>Description</h3>
-        <p>{listing.descripton}</p>
+        <p>{listing.description}</p>
+        <hr />
 
         <h3>{listing.highlight}</h3>
         <p>{listing.highlightDesc}</p>
-
         <hr />
 
         <div className="booking">
           <div>
-            <h2>What this place offer?</h2>
+            <h2>What this place offers?</h2>
             <div className="amenities">
-              {listing.amenities[0].split(", ").map((item, index) => (
+              {listing.amenities[0].split(",").map((item, index) => (
                 <div className="facility" key={index}>
                   <div className="facility_icon">
                     {
@@ -124,34 +324,34 @@ const ListingDetails = () => {
               ))}
             </div>
           </div>
-        </div>
 
-        <div>
-          How Long Do you want to stay?
-          <div className="date-range-calendar">
-            <DateRange ranges={dateRange} onChange={handleSelect} />
+          <div>
+            <h2>How long do you want to stay?</h2>
+            <div className="date-range-calendar">
+              <DateRange ranges={dateRange} onChange={handleSelect} />
+              {dayCount > 1 ? (
+                <h2>
+                  ${listing.price} x {dayCount} nights
+                </h2>
+              ) : (
+                <h2>
+                  ${listing.price} x {dayCount} night
+                </h2>
+              )}
 
-            {dayCount > 1 ? (
-              <h2>
-                ${listing.price} x {dayCount} nights
-              </h2>
-            ) : (
-              <h2>
-                ${listing.price} x {dayCount} night
-              </h2>
-            )}
+              <h2>Total price: ${listing.price * dayCount}</h2>
+              <p>Start Date: {dateRange[0].startDate.toDateString()}</p>
+              <p>End Date: {dateRange[0].endDate.toDateString()}</p>
 
-           <h2>Total price :$ {listing.price * dayCount}</h2>
-           <p>Start Date:{dateRange[0].startDate.toDateString()}</p>
-           <p>End Date:{dateRange[0].endDate.toDateString()}</p>
-
-           <button className="button" type="submit">
-            BOOKING
-           </button>
+              <button className="button" type="submit" onClick={handleSubmit}>
+                BOOKING
+              </button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
+
+
     </>
   );
 };

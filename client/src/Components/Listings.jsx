@@ -15,7 +15,7 @@ const Listings = () => {
 
   const [selectedCategory, setSelectedCategory] = useState("");
 
-  const listings = useSelector((state) => state.listings || []);
+  const listings = useSelector((state) => state.listings ) || [];
 
 
 
@@ -72,6 +72,7 @@ const Listings = () => {
               category,
               type,
               price,
+              booking = false
             }) => (
               <ListingCard
                 listingId={_id}
@@ -83,6 +84,7 @@ const Listings = () => {
                 category={category}
                 type={type}
                 price={price}
+                booking = {booking}
               />
             )
           )}

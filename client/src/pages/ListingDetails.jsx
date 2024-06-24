@@ -163,7 +163,7 @@
 // export default ListingDetails;
 
 import { useEffect, useState } from "react";
-import "../styles/ListingDetails.scss";
+import "../styles/ListingDetails.scss"
 import { useNavigate, useParams } from "react-router-dom";
 import { facilities } from "../data";
 

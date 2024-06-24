@@ -56,7 +56,8 @@ const ListingDetails = () => {
   // calculate difference days
   const dayCount = Math.round(end - start) / (1000 * 60 * 60 * 24);
 
-  return loading ? <Loader /> : (
+  return loading ? <Loader /> :(
+    <>
     <div className="listing-details">
       <div className="title">
         <h1>{listing.title}</h1>
@@ -84,7 +85,7 @@ const ListingDetails = () => {
 
       <div className="profile">
         <img
-          src={`http:localhost:3001/${listing.creator.profileImagePath.replace(
+          src={`http://localhost:3001/${listing.creator.profileImagePath.replace(
             "public",
             ""
           )}`}
@@ -110,15 +111,15 @@ const ListingDetails = () => {
           <div>
             <h2>What this place offer?</h2>
             <div className="amenities">
-              {JSON.parse(listing.amenities).map((item, index) => (
+              {listing.amenities[0].split(", ").map((item, index) => (
                 <div className="facility" key={index}>
                   <div className="facility_icon">
                     {
-                      facilities.find((facility) => facility.name === item.name)
+                      facilities.find((facility) => facility.name === item)
                         ?.icon
                     }
                   </div>
-                  <p>item</p>
+                  <p>{item}</p>
                 </div>
               ))}
             </div>
@@ -151,6 +152,7 @@ const ListingDetails = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

@@ -32,6 +32,12 @@ const RegisterPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    // if(formData.password === formData.confirmPassword){
+    //   setPasswordMatch(true)
+    // }else{
+    //   setPasswordMatch(false)
+    // }
    
     try {
       const register_form = new FormData();

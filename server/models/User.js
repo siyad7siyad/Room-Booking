@@ -23,6 +23,10 @@ const UserSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    wishList: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Listing'
+    }],
     tripList: {
       type: Array,
       default: [],

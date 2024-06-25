@@ -75,7 +75,9 @@ router.post("/create", upload.array("listingPhotos"), async (req, res) => {
 
     res.status(200).json(newListing);
   } catch (err) {
-    res.status(409).json({ message: "Failed to create listing", error: err.message });
+    res
+      .status(409)
+      .json({ message: "Failed to create listing", error: err.message });
     console.error(err);
   }
 });
@@ -87,32 +89,58 @@ router.get("/", async (req, res) => {
   try {
     let listings;
     if (qCategory) {
-      listings = await Listing.find({ category: qCategory }).populate("creator");
+      listings = await Listing.find({ category: qCategory }).populate(
+        "creator"
+      );
     } else {
       listings = await Listing.find();
     }
 
     res.status(200).json(listings);
   } catch (err) {
-    res.status(409).json({ message: "Failed to fetch listing", error: err.message });
+    res
+      .status(409)
+      .json({ message: "Failed to fetch listing", error: err.message });
     console.error(err);
   }
 });
 
-
-
 // listing details
 
-router.get("/:listingId",async(req,res)=>{
-  try{
-    const {listingId} = req.params
-    const listing = await Listing.findById(listingId).populate("creator")
-    res.status(202).json(listing)
-
-  }catch(err){
-    res.status(404).json({message:"listing is not found",error:err.message})
+router.get("/:listingId", async (req, res) => {
+  try {
+    const { listingId } = req.params;
+    const listing = await Listing.findById(listingId).populate("creator");
+    res.status(202).json(listing);
+  } catch (err) {
+    res
+      .status(404)
+      .json({ message: "listing is not found", error: err.message });
   }
-})
+});
 
+// search function
+router.get("/search/:search", async (req, res) => {
+  const { search } = req.params;
+  try {
+    let listings = [];
+    if (search === "all") {
+      listings = await Listing.find().populate("craetor");
+    } else {
+      listings = await Listing.find({
+        $or: [
+          { category: { $regex: search, $options: "i" } },
+          { title: { $regex: search, $options: "i" } },
+        ],
+      }).populate("creator");
+    }
+
+    res.status(200).json(listings);
+  } catch (err) {
+    res
+      .status(404)
+      .json({ message: "listing is not found", error: err.message });
+  }
+});
 
 module.exports = router;

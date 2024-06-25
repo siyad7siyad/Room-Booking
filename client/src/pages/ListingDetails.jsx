@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "../styles/ListingDetails.scss";
 import { useNavigate, useParams } from "react-router-dom";
 import { facilities } from "../data";
+import Footer from "../Components/Footer";
 
 import "react-date-range/dist/styles.css";
 import "react-date-range/dist/theme/default.css";
@@ -184,6 +185,7 @@ const ListingDetails = () => {
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 };

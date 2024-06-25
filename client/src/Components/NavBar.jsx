@@ -4,7 +4,7 @@ import { Search, Person, Menu } from "@mui/icons-material";
 import variables from "../styles/Variables.scss";
 import { useSelector, useDispatch } from "react-redux";
 import "../styles/Navbar.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { setLogout } from "../redux/state";
 
 const NavBar = () => {
@@ -12,6 +12,8 @@ const NavBar = () => {
   const user = useSelector((state) => state.user);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [search, setSearch] = useState("");
 
   return (
     <div className="navbar">
@@ -20,9 +22,19 @@ const NavBar = () => {
       </a>
 
       <div className="navbar_search">
-        <input type="text" placeholder="Search ..." />
-        <IconButton>
-          <Search sx={{ color: variables.pinkred }} />
+        <input
+          type="text"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+          placeholder="Search ..."
+        />
+        <IconButton disabled = {search===""}>
+          <Search
+            sx={{ color: variables.pinkred }}
+            onClick={() => {
+              navigate(`/properties/search/${search}`);
+            }}
+          />
         </IconButton>
       </div>
 
@@ -58,7 +70,6 @@ const NavBar = () => {
           <div className="navbar_right_accountmenu">
             <Link to="/login">Log In</Link>
             <Link to="/register">sign Up</Link>
-            
           </div>
         )}
 
@@ -68,7 +79,7 @@ const NavBar = () => {
             <Link to={`/${user._id}/wishList`}>Wish List</Link>
             <Link to={`/${user._id}/properties`}>Property List</Link>
             <Link to="">Reservation List</Link>
-            <Link to="">Become host</Link>
+            <Link to="/create-listing">Become host</Link>
             <Link
               to="/login"
               onClick={() => {
